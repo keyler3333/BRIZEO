@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  image     String?
+  projects  Project[]
+}
+
+model Project {
+  id              String   @id @default(cuid())
+  name            String
+  githubRepoUrl   String
+  branch          String   @default("main")
+  dockerfilePath  String   @default("./Dockerfile")
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
